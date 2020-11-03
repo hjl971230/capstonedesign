@@ -16,6 +16,19 @@ public class Player
     public int playerNum;
     public List<CardBartok> hand;
     public SlotDefBartok handSlotdef;
+    private int _score = 0;
+    const int STD_SCORE = 10;
+    public int score
+    {
+		get
+		{
+            return _score;
+		}
+		set
+		{
+            _score = value;
+		}
+    }
 
     public CardBartok AddCard(CardBartok eCB)
     {
@@ -31,7 +44,7 @@ public class Player
             hand = new List<CardBartok>(cards);
         }
 
-        eCB.SetSortingLayerName("20");
+        eCB.SetSortingLayerName("10");
         eCB.eventualSortLayer = handSlotdef.layerName;
 
         FanHand();
@@ -94,7 +107,7 @@ public class Player
         if (Bartok.S.jack != 0) Bartok.S.jack = 0;
         if (Bartok.S.king != 0) Bartok.S.king = 0;
 
-        //Utils.tr(Utils.RoundToPlaces(Time.time), "Player.TakeTurn");
+        //Utils.tr("Player.TakeTurn");
 
         if (type == PlayerType.human) return;
 
@@ -120,25 +133,54 @@ public class Player
             }
         }
 
-        if (attackvalidCards.Count == 0 && Bartok.attack_stack > 0)
-		{
-			for (int i = 0; i < Bartok.attack_stack; i++)
-			{
-				cb = AddCard(Bartok.S.Draw());
-				cb.callbackPlayer = this;
-			}
-			Bartok.attack_stack = 0;
-			return;
-		}
+		//if (attackvalidCards.Count == 0 && Bartok.attack_stack > 0)
+		//{
+		//	for (int i = 0; i < Bartok.attack_stack; i++)
+		//	{
+		//		cb = AddCard(Bartok.S.Draw());
+		//		cb.callbackPlayer = this;
+		//	}
+		//	Bartok.attack_stack = 0;
+		//	return;
+		//}
 
 		if (validCards.Count == 0)
         {
             cb = AddCard(Bartok.S.Draw());
             cb.callbackPlayer = this;
+            _score -= STD_SCORE;
             return;
         }
 
-        cb = validCards[Random.Range(0, validCards.Count)];
+        List<CardBartok> validComboList = new List<CardBartok>();
+
+        foreach (CardBartok tmp in hand)
+        {
+            if (Bartok.S.ValidCombo(tmp))
+            {
+                validComboList.Add(tmp);
+            }
+        }
+
+        if(!Bartok.S.combo_flag)
+        {
+            Bartok.S.combo_stack = 1;
+            Bartok.S.combo_add = 0;
+        }
+		else
+		{
+            Bartok.S.combo_stack *= 2;
+            Bartok.S.combo_add += 3;
+        }
+
+        if (validComboList.Count > 0)
+		{
+            cb = validComboList[Random.Range(0, validComboList.Count)];
+        }
+		else
+		{
+            cb = validCards[Random.Range(0, validCards.Count)];
+        }
         RemoveCard(cb);
         Bartok.S.MoveToTarget(cb);
         cb.callbackPlayer = this;
@@ -166,6 +208,15 @@ public class Player
             case 13:
                 Bartok.S.king = 3 * Bartok.S.queen;
                 break;
+        }
+        _score += STD_SCORE * Bartok.S.combo_stack;
+        if (validComboList.Count > 0)
+        {
+            Bartok.S.combo_flag = true;
+        }
+        else
+        {
+            Bartok.S.combo_flag = false;
         }
     }
 
@@ -214,7 +265,6 @@ public class Player
             }
             else
             {
-                
                 return lCD.Find(tmprank => tmprank.rank == lCD.Max().rank);
             }
         }
@@ -243,7 +293,7 @@ public class Player
 
     public void CBCallback(CardBartok tCB)
     {
-        //Utils.tr(Utils.RoundToPlaces(Time.time), "Player.CBCallback()", tCB.name, "Player " + playerNum);
+        //Utils.tr("Player.CBCallback()", tCB.name, "Player " + playerNum);
         Bartok.S.PassTurn();
     }
 }
