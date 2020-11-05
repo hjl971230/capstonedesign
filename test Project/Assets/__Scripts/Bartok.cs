@@ -43,8 +43,7 @@ public class Bartok : MonoBehaviour
     public static int attack_stack = 0;
     const int STD_SCORE = 10;
     public int combo_stack = 1;
-    public int combo_add = 0;
-    public bool combo_flag = false;
+    public int combo_turn = 0;
 
     private void Awake()
     {
@@ -55,7 +54,7 @@ public class Bartok : MonoBehaviour
     {
         deck = GetComponent<Deck>();
         deck.InitDeck(deckXML.text);
-        Deck.Shuffle(ref deck.cards);
+        //Deck.Shuffle(ref deck.cards);
 
         layout = GetComponent<LayoutBartok>();
         layout.ReadLayout(layoutXML.text);
@@ -115,44 +114,44 @@ public class Bartok : MonoBehaviour
         players[0].type = PlayerType.human;
 
         CardBartok tCB;
-		//int num = 0;
-		//for (int i = 0; i < 7; i++)
-		//{
-		//	switch (i)
-		//	{
-		//		case 0:
-		//			num = 0;
-		//			break;
-		//		case 1:
-		//			num = 1;
-		//			break;
-		//		case 2:
-		//			num = 13;
-		//			break;
-		//		case 3:
-		//			num = 14;
-		//			break;
-		//		case 4:
-		//			num = 26;
-		//			break;
-		//		case 5:
-		//			num = 27;
-		//			break;
-		//		case 6:
-		//			num = 40;
-		//			break;
-		//		default:
-		//			break;
-		//	}
-		//	num -= i;
-		//	tCB = Draw(num);
-		//	tCB.timeStart = Time.time + drawTimeStagger * (i * 4 + 3);
-		//	players[0].AddCard(tCB);
-		//}
-
-		for (int i = 0; i < numStartingCards; i++)
+        int num = 0;
+        for (int i = 0; i < 7; i++)
         {
-            for (int j = 0; j < 4; j++)
+            switch (i)
+            {
+                case 0:
+                    num = 0;
+                    break;
+                case 1:
+                    num = 1;
+                    break;
+                case 2:
+                    num = 13;
+                    break;
+                case 3:
+                    num = 14;
+                    break;
+                case 4:
+                    num = 26;
+                    break;
+                case 5:
+                    num = 27;
+                    break;
+                case 6:
+                    num = 40;
+                    break;
+                default:
+                    break;
+            }
+            num -= i;
+            tCB = Draw(num);
+            tCB.timeStart = Time.time + drawTimeStagger * (i * 4 + 3);
+            players[0].AddCard(tCB);
+        }
+
+        for (int i = 0; i < numStartingCards; i++)
+        {
+            for (int j = 0; j < 3; j++)
             {
                 tCB = Draw();
 
@@ -257,7 +256,7 @@ public class Bartok : MonoBehaviour
                 return;
             }
         }
-        int idx = (num + jack + king) + combo_add;
+        int idx = (num + jack + king) + combo_turn;
         if (idx >= players.Count || idx < 0)
         {
             idx %= players.Count;
@@ -267,7 +266,7 @@ public class Bartok : MonoBehaviour
 				idx %= players.Count;
 			}
 		}
-        //print("attack_stack : " + attack_stack);
+        print("attack_stack : " + attack_stack);
         CURRENT_PLAYER = players[idx];
         phase = TurnPhase.pre;
 
@@ -296,7 +295,7 @@ public class Bartok : MonoBehaviour
 
     public bool ValidCombo(CardBartok cb)
     {
-        if (cb.rank == targetCard.rank) return true;
+        if (cb.rank == targetCard.rank && cb.suit != targetCard.suit) return true;
 
         return false;
     }
@@ -308,51 +307,51 @@ public class Bartok : MonoBehaviour
         if (phase == TurnPhase.waiting) return;
 
         CardBartok cb;
-        List<CardBartok> validComboList = new List<CardBartok>();
+        List<CardBartok> attackvalidCards = new List<CardBartok>();
+
+        foreach (CardBartok tmp in CURRENT_PLAYER.hand)
+        {
+            if (AttackValidPlay(tmp))
+            {
+                attackvalidCards.Add(tmp);
+            }
+        }
+
+        if (attackvalidCards.Count == 0 && attack_stack > 0)
+        {
+            CardBartok aCB = null;
+            for (int i = 0; i < attack_stack; i++)
+            {
+                aCB = CURRENT_PLAYER.AddCard(Draw());
+            }
+            CURRENT_PLAYER.score -= STD_SCORE * attack_stack;
+            attack_stack = 0;
+            if(aCB != null) aCB.callbackPlayer = CURRENT_PLAYER;
+            return;
+        }
+
+        List<CardBartok> comboList = new List<CardBartok>();
 
         foreach (CardBartok tmp in CURRENT_PLAYER.hand)
         {
             if (ValidCombo(tmp))
             {
-                validComboList.Add(tmp);
+                comboList.Add(tmp);
             }
-        }
-        
-        if(!combo_flag)
-		{
-            combo_stack = 1;
-            combo_add = 0;
-        }
-		else
-		{
-            combo_stack *= 2;
-            combo_add += 3;
         }
 
         switch (tCB.state)
         {
             case CBState.drawpile:
-				//else
-				{
-                    cb = CURRENT_PLAYER.AddCard(Draw());
-                    cb.callbackPlayer = CURRENT_PLAYER;
-                    Utils.tr("Bartok.CardClicked()", "Draw", cb.name);
-                }
+                cb = CURRENT_PLAYER.AddCard(Draw());
+                cb.callbackPlayer = CURRENT_PLAYER;
+                Utils.tr("Bartok.CardClicked()", "Draw", cb.name);
+
                 CURRENT_PLAYER.score -= STD_SCORE;
                 phase = TurnPhase.waiting;
                 break;
             case CBState.hand:
-				//if (attackvalidCards.Count == 0 && attack_stack > 0)
-				//{
-				//	for (int i = 0; i < attack_stack; i++)
-				//	{
-				//		cb = CURRENT_PLAYER.AddCard(Draw());
-				//		cb.callbackPlayer = CURRENT_PLAYER;
-				//	}
-				//	attack_stack = 0;
-				//}
-                
-				if (ValidPlay(tCB) && tCB.faceUP)
+                if (ValidPlay(tCB) && tCB.faceUP)
                 {
                     CURRENT_PLAYER.RemoveCard(tCB);
                     MoveToTarget(tCB);
@@ -369,7 +368,7 @@ public class Bartok : MonoBehaviour
                             attack_stack += 2;
                             break;
                         case 3:
-                            attack_stack = 0;
+                            if (attack_stack > 0) attack_stack = 0;
                             break;
                         case 11:
                             jack = 1 * queen;
@@ -380,18 +379,22 @@ public class Bartok : MonoBehaviour
                         case 13:
                             king = 3 * queen;
                             break;
+                        default:
+                            break;
                     }
                     tCB.callbackPlayer = CURRENT_PLAYER;
                     Utils.tr("Bartok.CardClicked()", "Play", tCB.name, targetCard.name + " is target");
                     phase = TurnPhase.waiting;
                     CURRENT_PLAYER.score += STD_SCORE * combo_stack;
-                    if (validComboList.Count > 0)
+                    if (comboList.Count > 0)
                     {
-                        combo_flag = true;
+                        combo_turn += 3 * queen;
+                        combo_stack += 2;
                     }
-                    else
-                    {
-                        combo_flag = false;
+                    else if (comboList.Count == 0)
+                    { 
+                        combo_turn = 0;
+                        combo_stack = 0;
                     }
                 }
                 else
