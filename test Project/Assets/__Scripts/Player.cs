@@ -214,15 +214,15 @@ public class Player
                 break;
         }
         _score += STD_SCORE * Bartok.S.combo_stack;
-        if (comboList.Count > 0)
+        if (comboList.Count > 1)
         {
             Bartok.S.combo_turn += 3 * Bartok.S.queen;
-            Bartok.S.combo_stack += 2;
+            Bartok.S.combo_stack *= 2;
         }
         else if(comboList.Count == 0)
         {
             Bartok.S.combo_turn = 0;
-            Bartok.S.combo_stack = 0;
+            Bartok.S.combo_stack = 1;
         }
     }
 

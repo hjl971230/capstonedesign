@@ -15,9 +15,7 @@ public class Deck : MonoBehaviour
     public Sprite[] rankSprites;
 
     public Sprite cardBack;
-    public Sprite cardBackGold;
     public Sprite cardFront;
-    public Sprite cardFrontGold;
 
     public GameObject prefabCard;
     public GameObject prefabSprite;

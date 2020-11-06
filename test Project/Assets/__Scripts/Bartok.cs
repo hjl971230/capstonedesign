@@ -386,15 +386,15 @@ public class Bartok : MonoBehaviour
                     Utils.tr("Bartok.CardClicked()", "Play", tCB.name, targetCard.name + " is target");
                     phase = TurnPhase.waiting;
                     CURRENT_PLAYER.score += STD_SCORE * combo_stack;
-                    if (comboList.Count > 0)
+                    if (comboList.Count > 1)
                     {
                         combo_turn += 3 * queen;
-                        combo_stack += 2;
+                        combo_stack *= 2;
                     }
                     else if (comboList.Count == 0)
                     { 
                         combo_turn = 0;
-                        combo_stack = 0;
+                        combo_stack = 1;
                     }
                 }
                 else

@@ -393,7 +393,7 @@ MonoBehaviour:
   queen: 1
   king: 0
   combo_stack: 1
-  combo_add: 0
+  combo_turn: 0
 --- !u!114 &827460515
 MonoBehaviour:
   m_ObjectHideFlags: 0
