@@ -120,25 +120,25 @@ public class Bartok : MonoBehaviour
             switch (i)
             {
                 case 0:
-                    num = 0;
+                    num = 5;
                     break;
                 case 1:
-                    num = 1;
+                    num = 6;
                     break;
                 case 2:
-                    num = 13;
+                    num = 12;
                     break;
                 case 3:
-                    num = 14;
+                    num = 13;
                     break;
                 case 4:
-                    num = 26;
+                    num = 19;
                     break;
                 case 5:
-                    num = 27;
+                    num = 20;
                     break;
                 case 6:
-                    num = 40;
+                    num = 26;
                     break;
                 default:
                     break;
@@ -151,7 +151,7 @@ public class Bartok : MonoBehaviour
 
         for (int i = 0; i < numStartingCards; i++)
         {
-            for (int j = 0; j < 3; j++)
+            for (int j = 0; j < 4; j++)
             {
                 tCB = Draw();
 
@@ -340,6 +340,23 @@ public class Bartok : MonoBehaviour
             }
         }
 
+        if (comboList.Count > 0)
+        {
+            if (comboList.Count > 1)
+            {
+                combo_turn += 3 * queen;
+            }
+            //cb = comboList[Random.Range(0, comboList.Count)];
+            combo_stack *= 2;
+        }
+        else if (comboList.Count <= 0)
+        {
+            combo_turn = 0;
+            combo_stack = 1;
+        }
+
+        if (combo_stack <= 1) combo_stack = 1;
+
         switch (tCB.state)
         {
             case CBState.drawpile:
@@ -386,16 +403,7 @@ public class Bartok : MonoBehaviour
                     Utils.tr("Bartok.CardClicked()", "Play", tCB.name, targetCard.name + " is target");
                     phase = TurnPhase.waiting;
                     CURRENT_PLAYER.score += STD_SCORE * combo_stack;
-                    if (comboList.Count > 1)
-                    {
-                        combo_turn += 3 * queen;
-                        combo_stack *= 2;
-                    }
-                    else if (comboList.Count == 0)
-                    { 
-                        combo_turn = 0;
-                        combo_stack = 1;
-                    }
+                    
                 }
                 else
                 {
@@ -430,6 +438,8 @@ public class Bartok : MonoBehaviour
     public void RestartGame()
     {
         CURRENT_PLAYER = null;
+        combo_turn = 0;
+        combo_stack = 1;
         SceneManager.LoadScene("__Bartok_Scene_0");
     }
 
