@@ -160,10 +160,6 @@ public class Player
         else if (attackvalidCards.Count > 0 && Bartok.attack_stack > 0)
         {
             cb = attackvalidCards[Random.Range(0, attackvalidCards.Count)];
-            RemoveCard(cb);
-            Bartok.S.MoveToTarget(cb);
-            cb.callbackPlayer = this;
-            drawflag = false;
         }
 
         if (validCards.Count == 0)
@@ -181,18 +177,15 @@ public class Player
                 Bartok.S.combo_turn += 3 * Bartok.S.queen;
                 
             }
-            Bartok.S.combo_stack *= 2;
-            cb = comboList[Random.Range(0, comboList.Count)];
             drawflag = false;
-            RemoveCard(cb);
-            Bartok.S.MoveToTarget(cb);
-            cb.callbackPlayer = this;
+            cb = comboList[Random.Range(0, comboList.Count)];
+            Bartok.S.combo_stack *= 2;
         }
         else if (comboList.Count <= 0)
         {
             Bartok.S.combo_turn = 0;
             Bartok.S.combo_stack = 1;
-            drawflag = true;
+            if(Bartok.S.combo_stack >= 2) Bartok.S.PassTurn();
         }
 
         if (Bartok.S.combo_stack <= 1) Bartok.S.combo_stack = 1;
@@ -200,6 +193,9 @@ public class Player
         if (drawflag)
         {
             cb = validCards[Random.Range(0, validCards.Count)];
+        }
+        if(cb != null)
+		{
             RemoveCard(cb);
             Bartok.S.MoveToTarget(cb);
             cb.callbackPlayer = this;

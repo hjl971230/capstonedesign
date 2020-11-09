@@ -54,7 +54,7 @@ public class Bartok : MonoBehaviour
     {
         deck = GetComponent<Deck>();
         deck.InitDeck(deckXML.text);
-        //Deck.Shuffle(ref deck.cards);
+        Deck.Shuffle(ref deck.cards);
 
         layout = GetComponent<LayoutBartok>();
         layout.ReadLayout(layoutXML.text);
@@ -114,40 +114,40 @@ public class Bartok : MonoBehaviour
         players[0].type = PlayerType.human;
 
         CardBartok tCB;
-        int num = 0;
-        for (int i = 0; i < 7; i++)
-        {
-            switch (i)
-            {
-                case 0:
-                    num = 5;
-                    break;
-                case 1:
-                    num = 6;
-                    break;
-                case 2:
-                    num = 12;
-                    break;
-                case 3:
-                    num = 13;
-                    break;
-                case 4:
-                    num = 19;
-                    break;
-                case 5:
-                    num = 20;
-                    break;
-                case 6:
-                    num = 26;
-                    break;
-                default:
-                    break;
-            }
-            num -= i;
-            tCB = Draw(num);
-            tCB.timeStart = Time.time + drawTimeStagger * (i * 4 + 3);
-            players[0].AddCard(tCB);
-        }
+        //int num = 0;
+        //for (int i = 0; i < 7; i++)
+        //{
+        //    switch (i)
+        //    {
+        //        case 0:
+        //            num = 5;
+        //            break;
+        //        case 1:
+        //            num = 6;
+        //            break;
+        //        case 2:
+        //            num = 12;
+        //            break;
+        //        case 3:
+        //            num = 13;
+        //            break;
+        //        case 4:
+        //            num = 19;
+        //            break;
+        //        case 5:
+        //            num = 20;
+        //            break;
+        //        case 6:
+        //            num = 26;
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //    num -= i;
+        //    tCB = Draw(num);
+        //    tCB.timeStart = Time.time + drawTimeStagger * (i * 4 + 3);
+        //    players[0].AddCard(tCB);
+        //}
 
         for (int i = 0; i < numStartingCards; i++)
         {
