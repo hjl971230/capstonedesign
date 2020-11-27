@@ -867,13 +867,14 @@ MonoBehaviour:
   layoutXML: {fileID: 4900000, guid: d8aee73e73f35dd41811f92677bc8938, type: 3}
   layoutCenter: {x: 0, y: 0, z: 0}
   handFanDegrees: 10
-  numStartingCards: 7
+  numStartingCards: 3
   drawTimeStagger: 0.1
   turnEndButton: {fileID: 1919063799}
   deck: {fileID: 0}
   drawPile: []
   discardPile: []
   players: []
+  endPlayers: []
   targetCard: {fileID: 0}
   phase: 0
   jack: 0
@@ -1432,11 +1433,11 @@ RectTransform:
   m_Father: {fileID: 576701484}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -50, y: -280}
   m_SizeDelta: {x: 160, y: 30}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1919063799
 MonoBehaviour:
   m_ObjectHideFlags: 0

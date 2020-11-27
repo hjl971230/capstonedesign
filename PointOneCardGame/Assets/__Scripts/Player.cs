@@ -7,7 +7,8 @@ using UnityEditor.SceneManagement;
 public enum PlayerType
 {
     human,
-    ai
+    ai,
+    gameend
 }
 
 [System.Serializable]
@@ -111,9 +112,9 @@ public class Player
 
         //Utils.tr("Player.TakeTurn");
 
-        if (type == PlayerType.human) return;
+        if (type == PlayerType.human || type == PlayerType.gameend) return;
 
-		PointOneCardGame.S.phase = TurnPhase.waiting;
+        PointOneCardGame.S.phase = TurnPhase.waiting;
         Card cb = null;
         bool drawflag = true;
 
@@ -220,7 +221,7 @@ public class Player
                 PointOneCardGame.S.queen *= -1;
                 break;
             case 13:
-                PointOneCardGame.S.king = 3 * PointOneCardGame.S.queen;
+                PointOneCardGame.S.king = (PointOneCardGame.S.players.Count - 1) * PointOneCardGame.S.queen;
                 break;
             case 14:
                 PointOneCardGame.attack_stack += 7;

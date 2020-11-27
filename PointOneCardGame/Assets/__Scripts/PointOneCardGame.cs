@@ -24,7 +24,7 @@ public class PointOneCardGame : MonoBehaviour
     public Vector3 layoutCenter = Vector3.zero;
 
     public float handFanDegrees = 10f;
-    public int numStartingCards = 7;
+    public int numStartingCards = 3;
     public float drawTimeStagger = 0.1f;
 
     public Button turnEndButton;
@@ -37,6 +37,7 @@ public class PointOneCardGame : MonoBehaviour
     private LayoutPointOneCardGame layout;
     private Transform layoutAnchor;
     public List<Player> players;
+    public List<Player> endPlayers;
     public Card targetCard;
     public TurnPhase phase = TurnPhase.idle;
 
@@ -48,7 +49,7 @@ public class PointOneCardGame : MonoBehaviour
     public int combo_stack = 1;
     public int combo_turn = 0;
     public bool handflag = false;
-    const int fullHand = 15;
+    const int fullHand = 18;
 
     private void Awake()
     {
@@ -267,7 +268,7 @@ public class PointOneCardGame : MonoBehaviour
         if (num == -1)
         {
             int ndx = players.IndexOf(CURRENT_PLAYER);
-            num = ((ndx + 1 * queen) % 4);
+            num = ((ndx + 1 * queen) % players.Count);
         }
         int lastPlayerNum = -1;
         if (CURRENT_PLAYER != null)
@@ -284,18 +285,19 @@ public class PointOneCardGame : MonoBehaviour
             idx %= players.Count;
             if (idx < 0)
             {
-                idx += 4;
+                idx += players.Count;
                 idx %= players.Count;
             }
         }
-        print("attack_stack : " + attack_stack);
+        print("idx : " + idx);
         CURRENT_PLAYER = players[idx];
         phase = TurnPhase.pre;
 
-        if (players[idx].type == PlayerType.ai) turnEndButton.gameObject.SetActive(false);
+        if (players[idx].type != PlayerType.human) turnEndButton.gameObject.SetActive(false);
         else turnEndButton.gameObject.SetActive(true);
         CURRENT_PLAYER.TakeTurn();
         Manager.Texts.f_PrintScore();
+        if (CURRENT_PLAYER.type == PlayerType.gameend) PassTurn();
         //print("Player[0] " + players[0].score + " Player[1] " + players[1].score + " Player[2] " + players[2].score + " Player[3] " + players[3].score);
 
         //Utils.tr("PointOneCardGame.PassTurn()", "Old: " + lastPlayerNum, " New: " + CURRENT_PLAYER.playerNum);
@@ -417,7 +419,7 @@ public class PointOneCardGame : MonoBehaviour
                             queen *= -1;
                             break;
                         case 13:
-                            king = 3 * queen;
+                            king = (players.Count - 1) * queen;
                             combo_stack *= 2;
                             if (combo_turn <= 0)
                             {
@@ -454,7 +456,7 @@ public class PointOneCardGame : MonoBehaviour
                         //if(comboList.Find(tmp => tmp.rank == 12))queen = 1;
                         //if (comboList.Count >= 2)
                         {
-                            combo_turn = 3 * queen;
+                            combo_turn = (players.Count - 1) * queen;
                             tCB.callbackPlayer = CURRENT_PLAYER;
                             //CURRENT_PLAYER.CBCallback(null);
                         }
@@ -489,8 +491,23 @@ public class PointOneCardGame : MonoBehaviour
         return false;
     }
 
+    public bool checkAlone(Player player)
+	{
+        if (player.type == PlayerType.gameend) return true;
+        return false;
+	}
+
     public bool CheckGameOver()
     {
+        List<Player> alonePlayers = new List<Player>();
+		foreach (var tmp in players)
+		{
+            if(checkAlone(tmp))
+			{
+                alonePlayers.Add(tmp);
+			}
+		}
+
         if (drawPile.Count == 0)
         {
             List<Card> cards = new List<Card>();
@@ -506,13 +523,23 @@ public class PointOneCardGame : MonoBehaviour
         }
         if (CURRENT_PLAYER.hand.Count == 0 || checkHandFull())
         {
-            phase = TurnPhase.gameOver;
-            StartCoroutine(Manager.Texts.DelayTime("RestartGame", Manager.RestartGame_Delay));
-            //Invoke("RestartGame", 1);
-            return true;
+            if (CURRENT_PLAYER.hand.Count == 0)
+			{
+                //endPlayers.Add(CURRENT_PLAYER);
+                //players.Remove(CURRENT_PLAYER);
+                CURRENT_PLAYER.type = PlayerType.gameend;
+            }
+            if(alonePlayers.Count >= 3 || checkHandFull())
+			{
+                phase = TurnPhase.gameOver;
+                StartCoroutine(Manager.Texts.DelayTime("RestartGame", Manager.RestartGame_Delay));
+                //Invoke("RestartGame", 1);
+                return true;
+            }
         }
         return false;
     }
+
     public void RestartGame()
     {
         CURRENT_PLAYER = null;
