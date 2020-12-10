@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Button_Back" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAEAAAAAAAAAAAAAAEAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\Button_Back.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Button_Quit" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAEAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\Button_Quit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ButtonMenuUI" Collapsed="true">
+    <Position X="12.25" Y="6.75" Width="1.5" />
+    <AssociationLine Name="deck" Type="Deck" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="13.75" Y="6.892" />
+        <Point X="15.188" Y="6.892" />
+        <Point X="15.188" Y="4.191" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAABAAAACAAAAAAAAQAgAQAAAAAAkAAAAgAAAABAAA=</HashCode>
+      <FileName>Assets\__Scripts\ButtonMenuUI.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="deck" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Card" Collapsed="true">
+    <Position X="15.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IEQAAQEAASAAAGhAQAAAiKVAIIIIAECEAiAAEwAECEA=</HashCode>
+      <FileName>Assets\__Scripts\Card.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="state" />
+      <Field Name="def" />
+      <Field Name="callbackPlayer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Decorator" Collapsed="true">
+    <Position X="17.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAACAACAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\Card.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CardDefinition" Collapsed="true">
+    <Position X="15.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAQAAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\Card.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="pips" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Danger" Collapsed="true">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\Danger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Deck" Collapsed="true">
+    <Position X="14" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAJAAAoAAAAAAIAgAAgARgAQIkAQwBAgoCAAJCAAHAU=</HashCode>
+      <FileName>Assets\__Scripts\Deck.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="xmlr" />
+      <Field Name="formerCard" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="cards" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="EndGame" Collapsed="true">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAgAAAAACAAEAgCAAAAAAAAAAAAAAABAAAAAAgAAAI=</HashCode>
+      <FileName>Assets\__Scripts\EndGame.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SlotDefPointOneCardGame" Collapsed="true">
+    <Position X="8.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAIAIAAAIACUAABAAABAABgAAAAAgA=</HashCode>
+      <FileName>Assets\__Scripts\LayoutPointOneCardGame.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LayoutPointOneCardGame" Collapsed="true">
+    <Position X="8.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAgAAAAAIEAAAAAAAAAAAAAEEAAAQAAgAAA=</HashCode>
+      <FileName>Assets\__Scripts\LayoutPointOneCardGame.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="xmlr" />
+      <Field Name="xml" />
+      <Field Name="target" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Manager" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAgAAAAAICAABAICUCAAAAIAAAAAEAAEBAgABgAAyEE=</HashCode>
+      <FileName>Assets\__Scripts\Manager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player" Collapsed="true">
+    <Position X="5.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAIAAAABAAAgQgAAAIgAAAAAABBQAAAAAAEAUAAAA=</HashCode>
+      <FileName>Assets\__Scripts\Player.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="type" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="hand" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="PointOneCardGame" Collapsed="true">
+    <Position X="8.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EBAAA8EVACBiAkwIMAgCEARkABAABEEAJgREGAGwgEQ=</HashCode>
+      <FileName>Assets\__Scripts\PointOneCardGame.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="CURRENT_PLAYER" />
+      <Field Name="deck" />
+      <Field Name="phase" />
+      <Field Name="layout" />
+      <Field Name="targetCard" />
+      <Field Name="buttonMenu" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="discardPile" />
+      <Field Name="players" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="PT_XMLReader" Collapsed="true">
+    <Position X="10.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAgAAAAAAAAIAAQAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\PT_XMLReader.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="xml" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="PT_XMLHashList" Collapsed="true">
+    <Position X="12.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAgAAAAAAAAAACEAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\PT_XMLReader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PT_XMLHashtable" Collapsed="true">
+    <Position X="10.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gQAAAAQAIACMBABACAAAACAAIAAAEAAYgAEAAAAAIBA=</HashCode>
+      <FileName>Assets\__Scripts\PT_XMLReader.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="nodesList" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="TurnLight" Collapsed="true">
+    <Position X="9.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\TurnLight.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Utils" Collapsed="true">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAMAAAAgAAgAQAAAgIkAAQAAAAgAKAAAAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\Utils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EasingCachedCurve" Collapsed="true">
+    <Position X="2.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\Utils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Easing" Collapsed="true">
+    <Position X="0.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCAAAAAgAAAAAAAAAAIEAEAEkAAAAAAAAAAAAgAAACA=</HashCode>
+      <FileName>Assets\__Scripts\Utils.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="cache" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Enum Name="CBState" Collapsed="true">
+    <Position X="13.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAwAAgoQAAAAgAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\Card.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="PlayerType" Collapsed="true">
+    <Position X="5.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\__Scripts\Player.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TurnPhase" Collapsed="true">
+    <Position X="8.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAAAAAAAQgAAAAAAAAAAMA=</HashCode>
+      <FileName>Assets\__Scripts\PointOneCardGame.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BoundsTest" Collapsed="true">
+    <Position X="2.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAIA=</HashCode>
+      <FileName>Assets\__Scripts\Utils.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

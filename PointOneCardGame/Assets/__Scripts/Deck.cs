@@ -29,9 +29,12 @@ public class Deck : MonoBehaviour
     public Transform deckAnchor;
     public Dictionary<string, Sprite> dictSuits;
 
+    //7
+    public Card formerCard;//변경전 카드
+
     public void InitDeck(string deckXMLText)
     {
-        if(GameObject.Find("_Deck") == null)
+        if (GameObject.Find("_Deck") == null)
         {
             GameObject anchorGO = new GameObject("_deck");
             deckAnchor = anchorGO.transform;
@@ -44,7 +47,7 @@ public class Deck : MonoBehaviour
             {"H", suitHeart },
             {"S", suitSpade },
             {"J", null }
-            //{"JC", null }
+            //{"Z", null }
         };
 
         ReadDeck(deckXMLText);
@@ -68,7 +71,7 @@ public class Deck : MonoBehaviour
 
         PT_XMLHashList xDecos = xmlr.xml["xml"][0]["decorator"];
         Decorator deco;
-        for(int i = 0; i < xDecos.Count; i++)
+        for (int i = 0; i < xDecos.Count; i++)
         {
             deco = new Decorator();
             deco.type = xDecos[i].att("type");
@@ -84,72 +87,73 @@ public class Deck : MonoBehaviour
 
         PT_XMLHashList xCardDefs = xmlr.xml["xml"][0]["card"];
         CardDefinition cDef;
-         for(int i=0; i < xCardDefs.Count; i++)
-         {
-             cDef = new CardDefinition();
+        for (int i = 0; i < xCardDefs.Count; i++)
+        {
+            cDef = new CardDefinition();
 
-             cDef.rank = int.Parse(xCardDefs[i].att("rank"));
+            cDef.rank = int.Parse(xCardDefs[i].att("rank"));
 
-             PT_XMLHashList xPips = xCardDefs[i]["pip"];
+            PT_XMLHashList xPips = xCardDefs[i]["pip"];
 
-             if(xPips != null)
-             {
-                 for(int j = 0; j < xPips.Count; j++)
-                 {
-                     deco = new Decorator();
-                     deco.type = "pip";
-                     deco.flip = (xPips[j].att("flip") == "1");
-                     deco.loc.x = float.Parse(xPips[j].att("x"));
-                     deco.loc.y = float.Parse(xPips[j].att("y"));
-                     deco.loc.z = float.Parse(xPips[j].att("z"));
-                     if(xPips[j].HasAtt("scale"))
-                     {
-                         deco.scale = float.Parse(xPips[j].att("scale"));
-                     }
-                     cDef.pips.Add(deco);
-                 }
+            if (xPips != null)
+            {
+                for (int j = 0; j < xPips.Count; j++)
+                {
+                    deco = new Decorator();
+                    deco.type = "pip";
+                    deco.flip = (xPips[j].att("flip") == "1");
+                    deco.loc.x = float.Parse(xPips[j].att("x"));
+                    deco.loc.y = float.Parse(xPips[j].att("y"));
+                    deco.loc.z = float.Parse(xPips[j].att("z"));
+                    if (xPips[j].HasAtt("scale"))
+                    {
+                        deco.scale = float.Parse(xPips[j].att("scale"));
+                    }
+                    cDef.pips.Add(deco);
+                }
 
-                
-             }
 
-              if(xCardDefs[i].HasAtt("face"))
-              {
-                  cDef.face = xCardDefs[i].att("face");
-              }
-              cardDefs.Add(cDef);
-         }
+            }
+
+            if (xCardDefs[i].HasAtt("face"))
+            {
+                cDef.face = xCardDefs[i].att("face");
+            }
+            cardDefs.Add(cDef);
+        }
     }
 
     public CardDefinition GetCardDefinitionByRank(int rnk)
     {
-        foreach(var cd in cardDefs)
+        foreach (var cd in cardDefs)
         {
-            if(cd.rank == rnk)
+            if (cd.rank == rnk)
             {
                 return cd;
             }
         }
-         
+
         return null;
     }
 
     void MakeCards()
     {
         cardNames = new List<string>();
-        string[] letters = new string[] {"C", "D", "H", "S"};
-        foreach(var s in letters)
+        string[] letters = new string[] { "C", "D", "H", "S" };
+        foreach (var s in letters)
         {
-            for(int i = 0; i < 13; i++)
+            for (int i = 0; i < 13; i++)
             {
                 cardNames.Add(s + (i + 1));
             }
         }
         cardNames.Add("J14");
         cardNames.Add("J15");
+        cardNames.Add("ZeroCard");
 
         cards = new List<Card>();
 
-        for(int i = 0; i < cardNames.Count; i++)
+        for (int i = 0; i < cardNames.Count - 1; i++)
         {
             cards.Add(MakeCard(i));
         }
@@ -167,7 +171,7 @@ public class Deck : MonoBehaviour
         card.name = cardNames[cNum];
         card.suit = card.name[0].ToString();
         card.rank = int.Parse(card.name.Substring(1));
-        if(card.suit == "D" || card.suit == "H")
+        if (card.suit == "D" || card.suit == "H")
         {
             card.colS = "Red";
             card.color = Color.red;
@@ -262,7 +266,7 @@ public class Deck : MonoBehaviour
 
     void AddFace(Card card)
     {
-        if(card.def.face == "")
+        if (card.def.face == "")
         {
             return;
         }
@@ -279,9 +283,9 @@ public class Deck : MonoBehaviour
 
     Sprite GetFace(string faceS)
     {
-        foreach(var sprite in faceSprites)
+        foreach (var sprite in faceSprites)
         {
-            if(sprite.name == faceS)
+            if (sprite.name == faceS)
             {
                 return sprite;
             }
@@ -307,7 +311,7 @@ public class Deck : MonoBehaviour
         List<Card> tCards = new List<Card>();
 
         int ndx;
-        while(oCards.Count > 0)
+        while (oCards.Count > 0)
         {
             ndx = Random.Range(0, oCards.Count);
             tCards.Add(oCards[ndx]);
@@ -315,4 +319,79 @@ public class Deck : MonoBehaviour
         }
         oCards = tCards;
     }
+    //7
+    public void ChangeCard(Card card, string suit)//targetcard, suit
+    {
+        formerCard = card; //formerCard에 현재 targetCard 정보 저장
+        switch (suit)
+        {
+            case "C"://club
+                card.suit = "C";
+                card.color = Color.black;
+                card.colS = "Black";
+                break;
+
+            case "D"://diamond
+                card.suit = "D";
+                card.color = Color.red;
+                card.colS = "Red";
+                break;
+
+            case "H"://heart
+                card.suit = "H";
+                card.color = Color.red;
+                card.colS = "Red";
+                break;
+
+            case "S"://spade
+                card.suit = "S";
+                card.color = Color.black;
+                card.colS = "Black";
+                break;
+        }
+        for (int i = 0; i < card.spriteRenderers.Length; i++)
+        {
+            switch (card.spriteRenderers[i].name)
+            {
+                case "suit":
+                    card.spriteRenderers[i].sprite = dictSuits[card.suit];
+                    break;
+                case "letter":
+                    card.spriteRenderers[i].color = card.color;
+                    break;
+                case "pip":
+                    card.spriteRenderers[i].sprite = dictSuits[card.suit];
+                    break;
+                case "face":
+                    card.spriteRenderers[i].sprite = GetFace(card.def.face + card.suit);
+                    break;
+            }
+        }
+    }
+
+    public void ReturnCard(Card card)
+    {
+        card.suit = card.formerSuit;
+        card.color = card.formerColor;
+        card.colS = card.formerColS;
+        for (int i = 0; i < card.spriteRenderers.Length; i++)
+        {
+            switch (card.spriteRenderers[i].name)
+            {
+                case "suit":
+                    card.spriteRenderers[i].sprite = dictSuits[card.suit];
+                    break;
+                case "letter":
+                    card.spriteRenderers[i].color = card.color;
+                    break;
+                case "pip":
+                    card.spriteRenderers[i].sprite = dictSuits[card.suit];
+                    break;
+                case "face":
+                    card.spriteRenderers[i].sprite = GetFace(card.def.face + card.suit);
+                    break;
+            }
+        }
+    }
 }
+

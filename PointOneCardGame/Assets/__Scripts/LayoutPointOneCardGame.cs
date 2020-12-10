@@ -46,7 +46,7 @@ public class LayoutPointOneCardGame : MonoBehaviour
         for (int i = 0; i < slotX.Count; i++)
         {
             tSD = new SlotDefPointOneCardGame();
-            if(slotX[i].HasAtt("type"))
+            if (slotX[i].HasAtt("type"))
             {
                 tSD.type = slotX[i].att("type");
             }

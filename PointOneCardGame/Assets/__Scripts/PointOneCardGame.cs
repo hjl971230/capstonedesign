@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Linq;
 
 public enum TurnPhase
 {
@@ -17,6 +18,7 @@ public class PointOneCardGame : MonoBehaviour
 {
     static public PointOneCardGame S;
     static public Player CURRENT_PLAYER;
+    static public List<Player> Playerpref = null;
 
     [Header("Set in Inspector")]
     public TextAsset deckXML;
@@ -28,6 +30,9 @@ public class PointOneCardGame : MonoBehaviour
     public float drawTimeStagger = 0.1f;
 
     public Button turnEndButton;
+
+    //7
+    public ButtonMenuUI buttonMenu;
 
     [Header("Set Dynamically")]
     public Deck deck;
@@ -49,7 +54,14 @@ public class PointOneCardGame : MonoBehaviour
     public int combo_stack = 1;
     public int combo_turn = 0;
     public bool handflag = false;
-    const int fullHand = 18;
+    public bool sevenflag = false;
+    public bool bossflag = false;
+    public const int fullHand = 18;
+    public int bossTurnCount = 0;
+    public int bossTurnActiveCount = 0;
+    public int rankcount = 0;
+    const int AddScore = 400;
+    int CurrentAddScore = 0;
 
     private void Awake()
     {
@@ -65,6 +77,9 @@ public class PointOneCardGame : MonoBehaviour
         combo_stack = 1;
         combo_turn = 0;
         handflag = false;
+        bossTurnActiveCount = 0;
+        CURRENT_PLAYER = null;
+        CurrentAddScore = AddScore;
 
         turnEndButton = GameObject.Find("TurnEndButton").GetComponent<Button>();
         turnEndButton.gameObject.SetActive(false);
@@ -73,25 +88,13 @@ public class PointOneCardGame : MonoBehaviour
         deck = GetComponent<Deck>();
         deck.InitDeck(deckXML.text);
         Deck.Shuffle(ref deck.cards);
-
+        
         layout = GetComponent<LayoutPointOneCardGame>();
         layout.ReadLayout(layoutXML.text);
 
-        //drawPile = UpgradeCardList(deck.cards);
         drawPile = deck.cards;
         LayoutGame();
     }
-
-    //List<Card> UpgradeCardList(List<Card> lCD)
-    //{
-    //    List<Card> lCB = new List<Card>();
-    //    foreach (var tCD in lCD)
-    //    {
-    //        lCB.Add(tCD as Card);
-    //    }
-
-    //    return lCB;
-    //}
 
     public void ArrangeDrawPile()
     {
@@ -131,6 +134,17 @@ public class PointOneCardGame : MonoBehaviour
             pl.playerNum = players.Count;
         }
         players[0].type = PlayerType.human;
+        players[0].PlayerName = "Player";
+        List<AiType> typelist = new List<AiType>();
+        typelist.Add(AiType.type1);
+        typelist.Add(AiType.type2);
+        typelist.Add(AiType.type3);
+        for (int i = 1; i < players.Count; i++)
+        {
+            players[i].PlayerName = "Ai " + i.ToString();
+            players[i].aiType = typelist[Random.Range(0, typelist.Count)];
+            typelist.Remove(players[i].aiType);
+        }
 
         Card tCB;
         //int num = 0;
@@ -193,6 +207,11 @@ public class PointOneCardGame : MonoBehaviour
         if (targetCard != null)
         {
             MoveToDiscard(targetCard);
+            if (deck.formerCard != null)
+            {
+                deck.ReturnCard(deck.formerCard);
+                deck.formerCard = null;
+            }
         }
         targetCard = tCB;
         return tCB;
@@ -260,11 +279,47 @@ public class PointOneCardGame : MonoBehaviour
 
     public void StartGame()
     {
+        bossTurnActiveCount = Random.Range(24, 28);
         PassTurn(1);
+    }
+
+    public void BossCheck()
+    {
+        int rnum = 0;
+        if (bossTurnActiveCount <= bossTurnCount) bossflag = true;
+        if ((combo_stack == 1 || king == 0) && !bossflag && CURRENT_PLAYER.type != PlayerType.gameend) bossTurnCount++;
+
+        if (bossflag)
+        {
+            rnum = Random.Range(0, 2);
+            switch (rnum)
+            {
+                case 0:
+                    //pattern 1
+                    Danger.S.Danger1.SetActive(true);
+                    StartCoroutine(PassTurnWaitMIn());
+                    CardChangePattern();
+                    break;
+                case 1:
+                    //pattern 2
+                    Danger.S.Danger2.SetActive(true);
+                    StartCoroutine(PassTurnWaitMIn());
+                    ScoreAttackPattern();
+                    break;
+                default:
+                    break;
+            }
+            bossTurnActiveCount = Random.Range(24, 28);
+            bossTurnCount = 0;
+            bossflag = false;
+        }
+        else PassTurn();
     }
 
     public void PassTurn(int num = -1)
     {
+        if (combo_stack <= 1) handflag = false;
+
         if (num == -1)
         {
             int ndx = players.IndexOf(CURRENT_PLAYER);
@@ -289,7 +344,6 @@ public class PointOneCardGame : MonoBehaviour
                 idx %= players.Count;
             }
         }
-        print("idx : " + idx);
         CURRENT_PLAYER = players[idx];
         phase = TurnPhase.pre;
 
@@ -297,10 +351,15 @@ public class PointOneCardGame : MonoBehaviour
         else turnEndButton.gameObject.SetActive(true);
         CURRENT_PLAYER.TakeTurn();
         Manager.Texts.f_PrintScore();
-        if (CURRENT_PLAYER.type == PlayerType.gameend) PassTurn();
-        //print("Player[0] " + players[0].score + " Player[1] " + players[1].score + " Player[2] " + players[2].score + " Player[3] " + players[3].score);
+        if (CURRENT_PLAYER.type == PlayerType.gameend) BossCheck();
+    }
 
-        //Utils.tr("PointOneCardGame.PassTurn()", "Old: " + lastPlayerNum, " New: " + CURRENT_PLAYER.playerNum);
+    IEnumerator PassTurnWaitMIn()
+    {
+        yield return new WaitForSeconds(3.0f);
+        Danger.S.Danger1.SetActive(false);
+        Danger.S.Danger2.SetActive(false);
+        PassTurn();
     }
 
     public bool ValidPlay(Card cb)
@@ -316,9 +375,9 @@ public class PointOneCardGame : MonoBehaviour
 
     public bool AttackValidPlay(Card cb)
     {
+        if (cb.suit == "J" && cb.rank >= 14) return true;
         if (cb.rank == targetCard.rank && (cb.rank <= 3 || cb.rank >= 14)) return true;
         if (cb.suit == targetCard.suit && (cb.rank <= 3 || cb.rank >= 14)) return true;
-        if (cb.suit == "J" && cb.rank >= 14) return true;
         if (targetCard.suit == "J" && targetCard.rank == 14 && cb.suit == "S" && cb.rank == 1) return true;
 
         return false;
@@ -326,7 +385,7 @@ public class PointOneCardGame : MonoBehaviour
 
     public bool ValidCombo(Card cb)
     {
-        if (cb.rank != 13 && cb.rank == targetCard.rank && cb.suit != targetCard.suit) return true;
+        if (cb.rank != 13 && cb.rank == targetCard.rank) return true;
 
         return false;
     }
@@ -363,13 +422,14 @@ public class PointOneCardGame : MonoBehaviour
 
         List<Card> comboList = new List<Card>();
 
-        //foreach (Card tmp in CURRENT_PLAYER.hand)
-        //{
-        //    if (ValidCombo(tmp))
-        //    {
-        //        comboList.Add(tmp);
-        //    }
-        //}
+        List<Player> alonePlayers = new List<Player>();
+        foreach (var tmp in players)
+        {
+            if (checkAlone(tmp))
+            {
+                alonePlayers.Add(tmp);
+            }
+        }
 
         switch (tCB.state)
         {
@@ -381,14 +441,14 @@ public class PointOneCardGame : MonoBehaviour
                 cb = CURRENT_PLAYER.AddCard(Draw());
                 handflag = true;
                 //cb.callbackPlayer = CURRENT_PLAYER;
-                Utils.tr("PointOneCardGame.CardClicked()", "Draw", cb.name);
                 CURRENT_PLAYER.score -= STD_SCORE;
                 phase = TurnPhase.waiting;
                 break;
             case CBState.hand:
                 if (ValidPlay(tCB) && tCB.faceUP)
                 {
-                    if (attack_stack > 0 && tCB.rank > 3)
+                    if (attack_stack > 0 && tCB.rank > 3 && tCB.rank < 14 
+                        && (targetCard.callbackPlayer.type == PlayerType.ai || targetCard.callbackPlayer == null))
                     {
                         return;
                     }
@@ -410,10 +470,17 @@ public class PointOneCardGame : MonoBehaviour
                         case 3:
                             if (attack_stack > 0) attack_stack = 0;
                             break;
-                        case 7:
+                        case 7: //7
+                            if (combo_turn <= 0)
+                            {
+                                buttonMenu.ShowMenu(true);
+                                sevenflag = true;
+                            }
                             break;
                         case 11:
-                            jack = 1 * queen;
+                            if(alonePlayers.Count >= 2) 
+                                jack = (players.Count - 1) * queen;
+                            else jack = 1 * queen;
                             break;
                         case 12:
                             queen *= -1;
@@ -421,12 +488,11 @@ public class PointOneCardGame : MonoBehaviour
                         case 13:
                             king = (players.Count - 1) * queen;
                             combo_stack *= 2;
+                            handflag = false;
                             if (combo_turn <= 0)
                             {
-                                handflag = false;
                                 tCB.callbackPlayer = CURRENT_PLAYER;
                             }
-                            //PassTurn();
                             break;
                         case 14:
                             attack_stack += 7;
@@ -437,9 +503,9 @@ public class PointOneCardGame : MonoBehaviour
                         default:
                             break;
                     }
-                    //tCB.callbackPlayer = CURRENT_PLAYER;
-                    handflag = true;
-                    //Utils.tr("PointOneCardGame.CardClicked()", "Play", tCB.name, targetCard.name + " is target");
+                    if (tCB.rank != 11) jack = 0;
+                    if (tCB.rank != 13) king = 0;
+                    if (king == 0) handflag = true;
                     phase = TurnPhase.waiting;
                     CURRENT_PLAYER.score += STD_SCORE * combo_stack;
                     foreach (Card tmp in CURRENT_PLAYER.hand)
@@ -452,14 +518,10 @@ public class PointOneCardGame : MonoBehaviour
                     if (comboList.Count >= 1)
                     {
                         combo_stack *= 2;
-                        if(comboList.Find(tmp => tmp.rank == 11))jack = 0;
+                        if (comboList.Find(tmp => tmp.rank == 11)) jack = 0;
                         //if(comboList.Find(tmp => tmp.rank == 12))queen = 1;
-                        //if (comboList.Count >= 2)
-                        {
-                            combo_turn = (players.Count - 1) * queen;
-                            tCB.callbackPlayer = CURRENT_PLAYER;
-                            //CURRENT_PLAYER.CBCallback(null);
-                        }
+                        combo_turn = (players.Count - 1) * queen;
+                        tCB.callbackPlayer = CURRENT_PLAYER; 
                     }
                     else if (comboList.Count <= 0)
                     {
@@ -479,11 +541,43 @@ public class PointOneCardGame : MonoBehaviour
 
     }
 
+    public void CardChangePattern()
+    {
+        int rNum = 0;
+        List<string> cSprite = new List<string> { "S", "C", "H", "D" };
+
+        if(targetCard.suit != "J")
+        {
+            cSprite.Remove(targetCard.suit);
+            rNum = Random.Range(0, cSprite.Count);
+
+            switch (rNum)
+            {
+                case 0:
+                case 1:
+                case 2:
+                    deck.ChangeCard(targetCard, cSprite[rNum]);
+                    break;
+            }
+        }
+    }
+
+    public void ScoreAttackPattern()
+    {
+        foreach (var item in players)
+        {
+            if(item.hand.Count >= 7)
+            {
+                item.score -= (item.hand.Count - 6) * 10;
+            }
+        }
+    }
+
     public bool checkHandFull()
     {
         foreach (var item in players)
         {
-            if(item.hand.Count >= fullHand)
+            if (item.hand.Count >= fullHand)
             {
                 return true;
             }
@@ -492,21 +586,21 @@ public class PointOneCardGame : MonoBehaviour
     }
 
     public bool checkAlone(Player player)
-	{
+    {
         if (player.type == PlayerType.gameend) return true;
         return false;
-	}
+    }
 
     public bool CheckGameOver()
     {
         List<Player> alonePlayers = new List<Player>();
-		foreach (var tmp in players)
-		{
-            if(checkAlone(tmp))
-			{
+        foreach (var tmp in players)
+        {
+            if (checkAlone(tmp))
+            {
                 alonePlayers.Add(tmp);
-			}
-		}
+            }
+        }
 
         if (drawPile.Count == 0)
         {
@@ -523,17 +617,30 @@ public class PointOneCardGame : MonoBehaviour
         }
         if (CURRENT_PLAYER.hand.Count == 0 || checkHandFull())
         {
-            if (CURRENT_PLAYER.hand.Count == 0)
-			{
+            if (CURRENT_PLAYER.hand.Count == 0 && CURRENT_PLAYER.type != PlayerType.gameend)
+            {
                 //endPlayers.Add(CURRENT_PLAYER);
                 //players.Remove(CURRENT_PLAYER);
                 CURRENT_PLAYER.type = PlayerType.gameend;
+                CURRENT_PLAYER.rank = ++rankcount;
+                CurrentAddScore -= 100;
+                CURRENT_PLAYER.score += CurrentAddScore;
             }
-            if(alonePlayers.Count >= 3 || checkHandFull())
-			{
+            if (alonePlayers.Count >= 3 || checkHandFull())
+            {
                 phase = TurnPhase.gameOver;
-                StartCoroutine(Manager.Texts.DelayTime("RestartGame", Manager.RestartGame_Delay));
-                //Invoke("RestartGame", 1);
+                //StartCoroutine(Manager.Texts.DelayTime("RestartGame", Manager.RestartGame_Delay));
+                var ranks = from n in players orderby n.score descending, n.hand.Count ascending select n;
+                players = ranks.ToList();
+                for (int i = 0; i < players.Count; i++)
+                {
+                    if(players[i].type != PlayerType.gameend)
+                    {
+                        if(CurrentAddScore > 0) CurrentAddScore -= 100;
+                        players[i].score += CurrentAddScore;
+                    }
+                }
+                Invoke("RestartGame", 1);
                 return true;
             }
         }
@@ -542,23 +649,41 @@ public class PointOneCardGame : MonoBehaviour
 
     public void RestartGame()
     {
-        CURRENT_PLAYER = null;
-        combo_turn = 0;
-        combo_stack = 1;
-        SceneManager.LoadScene("_PointOneCardGame_Scene_0");
+        //CURRENT_PLAYER = null;
+        //combo_turn = 0;
+        //combo_stack = 1;
+        Playerpref = players;
+        SceneManager.LoadScene("EndGame");
     }
 
     public void TurnEnd()
     {
         Card cb;
-        List<Card> attackvalidCards = new List<Card>();
+        if (CURRENT_PLAYER.hand.Count == 0) handflag = true;
 
-        if (handflag) CURRENT_PLAYER.CBCallback(null);
+        if (handflag) 
+        {
+            if (sevenflag)
+            {
+                if (combo_stack <= 1) handflag = false;
+                return;
+            }
+            else 
+            { 
+                if (combo_turn >= 1)
+                {
+                    combo_turn = 0;
+                    combo_stack = 1;
+                }
+                if (combo_stack <= 1) handflag = false;
+                CURRENT_PLAYER.CBCallback(null); 
+            }
+        }
         else
         {
-
             if (attack_stack > 0)
             {
+                handflag = false;
                 Card aCB = null;
                 for (int i = 0; i < attack_stack; i++)
                 {
@@ -566,16 +691,27 @@ public class PointOneCardGame : MonoBehaviour
                 }
                 CURRENT_PLAYER.score -= STD_SCORE * attack_stack;
                 attack_stack = 0;
+                if (combo_turn >= 1)
+                {
+                    combo_turn = 0;
+                    combo_stack = 1;
+                }
                 if (aCB != null) aCB.callbackPlayer = CURRENT_PLAYER;
             }
             else
             {
+                handflag = false;
                 cb = CURRENT_PLAYER.AddCard(Draw());
                 CURRENT_PLAYER.score -= STD_SCORE;
                 phase = TurnPhase.waiting;
+                if (combo_turn >= 1)
+                {
+                    combo_turn = 0;
+                    combo_stack = 1;
+                }
                 cb.callbackPlayer = CURRENT_PLAYER;
             }
         }
-        handflag = false;
+        
     }
 }

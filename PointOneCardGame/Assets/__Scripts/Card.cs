@@ -48,19 +48,29 @@ public class Card : MonoBehaviour
     public GameObject reportFinishTo = null;
     public Player callbackPlayer = null;
 
+    //7카드
+    public string formerSuit;
+    public Color formerColor;
+    public string formerColS;
+    public CardDefinition formerDef;
+
     void Awake()
     {
         callbackPlayer = null;
     }
 
-    private void Start() 
+    private void Start()
     {
+        formerSuit = suit;
+        formerColor = color;
+        formerColS = colS;
+
         SetSortOrder(0);
     }
 
     public void PopulateSpriteRenders()
     {
-        if(spriteRenderers == null || spriteRenderers.Length == 0)
+        if (spriteRenderers == null || spriteRenderers.Length == 0)
         {
             spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
         }
@@ -70,7 +80,7 @@ public class Card : MonoBehaviour
     {
         PopulateSpriteRenders();
 
-        foreach(var tSR in spriteRenderers)
+        foreach (var tSR in spriteRenderers)
         {
             tSR.sortingLayerName = tSLN;
         }
@@ -80,9 +90,9 @@ public class Card : MonoBehaviour
     {
         PopulateSpriteRenders();
 
-        foreach(var tSR in spriteRenderers)
+        foreach (var tSR in spriteRenderers)
         {
-            if(tSR.gameObject == this.gameObject)
+            if (tSR.gameObject == this.gameObject)
             {
                 tSR.sortingOrder = sOrd;
                 continue;
@@ -90,13 +100,13 @@ public class Card : MonoBehaviour
 
             switch (tSR.gameObject.name)
             {
-            case "back":
-                tSR.sortingOrder = sOrd + 2;
-                break;
-            case "face":
-            default:
-                tSR.sortingOrder = sOrd + 1;
-                break;
+                case "back":
+                    tSR.sortingOrder = sOrd + 2;
+                    break;
+                case "face":
+                default:
+                    tSR.sortingOrder = sOrd + 1;
+                    break;
             }
         }
     }
@@ -209,7 +219,7 @@ public class Card : MonoBehaviour
     //    base.OnMouseUpAsButton();
     //}
 
-    virtual public void OnMouseUpAsButton() 
+    virtual public void OnMouseUpAsButton()
     {
         PointOneCardGame.S.CardClicked(this);
         print(name);
@@ -219,10 +229,10 @@ public class Card : MonoBehaviour
 [System.Serializable]
 public class Decorator
 {
-   public string type;
-   public Vector3 loc;
-   public bool flip = false;
-   public float scale = 1f;
+    public string type;
+    public Vector3 loc;
+    public bool flip = false;
+    public float scale = 1f;
 }
 
 [System.Serializable]
