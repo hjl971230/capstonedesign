@@ -7,6 +7,7 @@ ScriptsOnlyBuild:
     - Card
     - Danger
     - Deck
+    - EndGame
     - LayoutPointOneCardGame
     - Manager
     - PointOneCardGame
@@ -51,24 +52,24 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
-    - Class: 108
-      Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11252}
+      Script: {instanceID: 11250}
     - Class: 114
-      Script: {instanceID: 11410}
+      Script: {instanceID: 11408}
     - Class: 114
-      Script: {instanceID: 11450}
+      Script: {instanceID: 11448}
     - Class: 114
-      Script: {instanceID: 11842}
+      Script: {instanceID: 11824}
     - Class: 114
-      Script: {instanceID: 12234}
+      Script: {instanceID: 11840}
     - Class: 114
-      Script: {instanceID: 12540}
+      Script: {instanceID: 12232}
     - Class: 114
-      Script: {instanceID: 12720}
+      Script: {instanceID: 12538}
     - Class: 114
-      Script: {instanceID: 13076}
+      Script: {instanceID: 12718}
+    - Class: 114
+      Script: {instanceID: 13074}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -113,21 +114,21 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11252}
+      Script: {instanceID: 11250}
     - Class: 114
-      Script: {instanceID: 11410}
+      Script: {instanceID: 11408}
     - Class: 114
-      Script: {instanceID: 11450}
+      Script: {instanceID: 11448}
     - Class: 114
-      Script: {instanceID: 11766}
+      Script: {instanceID: 11764}
     - Class: 114
-      Script: {instanceID: 11842}
+      Script: {instanceID: 11840}
     - Class: 114
-      Script: {instanceID: 12234}
+      Script: {instanceID: 12232}
     - Class: 114
-      Script: {instanceID: 12720}
+      Script: {instanceID: 12718}
     - Class: 114
-      Script: {instanceID: 13076}
+      Script: {instanceID: 13074}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -174,21 +175,21 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11252}
+      Script: {instanceID: 11250}
     - Class: 114
-      Script: {instanceID: 11410}
+      Script: {instanceID: 11408}
     - Class: 114
-      Script: {instanceID: 11450}
+      Script: {instanceID: 11448}
     - Class: 114
-      Script: {instanceID: 11842}
+      Script: {instanceID: 11840}
     - Class: 114
-      Script: {instanceID: 12234}
+      Script: {instanceID: 12232}
     - Class: 114
-      Script: {instanceID: 12540}
+      Script: {instanceID: 12538}
     - Class: 114
-      Script: {instanceID: 12720}
+      Script: {instanceID: 12718}
     - Class: 114
-      Script: {instanceID: 13076}
+      Script: {instanceID: 13074}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -241,35 +242,35 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11252}
+      Script: {instanceID: 11250}
     - Class: 114
-      Script: {instanceID: 11410}
+      Script: {instanceID: 11408}
     - Class: 114
-      Script: {instanceID: 11450}
+      Script: {instanceID: 11448}
     - Class: 114
-      Script: {instanceID: 11610}
+      Script: {instanceID: 11608}
     - Class: 114
-      Script: {instanceID: 11842}
+      Script: {instanceID: 11840}
     - Class: 114
-      Script: {instanceID: 11902}
+      Script: {instanceID: 11900}
     - Class: 114
-      Script: {instanceID: 11906}
+      Script: {instanceID: 11904}
     - Class: 114
-      Script: {instanceID: 12118}
+      Script: {instanceID: 12116}
     - Class: 114
-      Script: {instanceID: 12234}
+      Script: {instanceID: 12232}
     - Class: 114
-      Script: {instanceID: 12440}
+      Script: {instanceID: 12438}
     - Class: 114
-      Script: {instanceID: 12568}
+      Script: {instanceID: 12566}
     - Class: 114
-      Script: {instanceID: 12596}
+      Script: {instanceID: 12594}
     - Class: 114
-      Script: {instanceID: 12720}
+      Script: {instanceID: 12718}
     - Class: 114
-      Script: {instanceID: 12808}
+      Script: {instanceID: 12806}
     - Class: 114
-      Script: {instanceID: 13076}
+      Script: {instanceID: 13074}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 124
@@ -467,7 +468,7 @@ ScriptsOnlyBuild:
     className: Shadow
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: fa5f4b9986f209c17a678243b2e2ddf7
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: EndGame
@@ -503,7 +504,7 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
-      Hash: 3e50a9efd5190f7c7226e4a3a23e0fe7
+      Hash: 8c691bd69e4a6c201f538f6e6a23caa0
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Manager
@@ -629,13 +630,13 @@ ScriptsOnlyBuild:
     className: Button_Quit
   - hash:
       serializedVersion: 2
-      Hash: 8303a9844fc9816d5523c8f96766c40d
+      Hash: d1c74dd236e828694f98cbe9a840fe03
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Card
   - hash:
       serializedVersion: 2
-      Hash: cfafbab7a0cff6f751151e31ccbf9ef8
+      Hash: 83ec471a785d09d65dbcb59ae88e457d
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PointOneCardGame
@@ -665,7 +666,7 @@ ScriptsOnlyBuild:
     className: BeforeAfterTestCommandState
   - hash:
       serializedVersion: 2
-      Hash: 6001748f30de43b62cae96cad8cb656e
+      Hash: 577ef5013f07cb22725ccdfbf507f49a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ButtonMenuUI
@@ -789,5 +790,5 @@ ScriptsOnlyBuild:
   - Assets/Scenes/Rules.unity
   - Assets/Scenes/_PointOneCardGame_Scene_0.unity
   - Assets/Scenes/EndGame.unity
-  playerPath: "F:/\uD559\uAD50/20\uB144 2\uD559\uAE30/test - \uBCF5\uC0AC\uBCF8/buildtest/test
+  playerPath: "F:/\uD559\uAD50/20\uB144 2\uD559\uAE30/\uCEA1\uC2A4\uD1A4/buildTest/test
     Project.exe"
